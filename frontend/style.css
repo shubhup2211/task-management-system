@@ -1,0 +1,205 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    
+    height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    overflow: auto; 
+}
+
+header {
+    background-color: #6366f1;
+    color: white;
+    text-align: center;
+    padding: 20px; 
+    flex-shrink: 0; /* Prevents header from shrinking */
+}
+
+header h1 { font-size: 2rem; font-weight: 700; }
+header p { font-size: 1rem; opacity: 0.9; }
+
+/* Main Layout */
+.container {
+    display: flex;
+    width: 95%;       
+    margin: 30px auto;
+    gap: 50px;
+    flex: 1; 
+    min-height: 0; 
+    
+    overflow: hidden; 
+}
+
+/* Card */
+.card {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column; 
+    height: 100%; 
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #e5e7eb;
+    padding: 15px 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid #d1d5db;
+    color: #1f2937;
+    flex-shrink: 0; 
+}
+
+.card-body {
+    padding: 20px;
+    flex: 1; 
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden; 
+}
+
+/* Form */
+.left-panel {
+    flex: 0 0 350px; 
+}
+
+.form-content {
+    overflow-y: auto; 
+}
+
+/* Task List */
+.right-panel {
+    flex: 1; 
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* List */
+.list-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-shrink: 0; 
+}
+.search-input { flex: 3; }
+.filter-select { flex: 1; }
+
+/* Table scroll */
+.table-container {
+    flex: 1 1 0; 
+    height: 0; 
+    overflow-y: auto; 
+    border: 1px solid #dfdfdf;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Sticky header - header stick at top */
+th {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff; 
+    z-index: 10;
+    text-align: left;
+    padding: 15px 12px;
+    border-bottom: 2px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); 
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: top;
+    font-size: 0.95rem;
+    color: #374151;
+}
+
+/* from input */
+.form-group { margin-bottom: 15px; }
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #9ca3af;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    background-color: #fff;
+    font-family: inherit;
+}
+textarea { 
+    resize: none; 
+    height: 120px; 
+}
+
+.btn-primary {
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    width: 100%;
+}
+.btn-primary:hover { background-color: #4f46e5; }
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+.badge.pending { color: #d97706; background-color: #fffbeb; border: 1px solid #fcd34d; }
+.badge.completed { color: #059669; background-color: #ecfdf5; border: 1px solid #6ee7b7; }
+
+.actions { display: flex; gap: 8px; }
+.btn-icon {
+    background: white; border: 1px solid #e5e7eb; cursor: pointer;
+    padding: 6px; border-radius: 4px;
+}
+.btn-icon:hover { background-color: #f3f4f6; }
+.btn-icon.delete:hover { background-color: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+
+/* responsive */
+@media (max-width: 900px) {
+    body { height: auto; overflow: auto; } 
+    .container { flex-direction: column; height: auto; }
+    .card { height: auto; }
+    .left-panel { flex: none; width: 100%; }
+    .table-scroll-area { max-height: 400px; } 
+}

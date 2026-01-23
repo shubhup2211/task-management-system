@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<script src="script.js"></script>
+<body>
+
+    <header>
+        <h1>TaskFlow</h1>
+        <p>Task Management System</p>
+    </header>
+
+    <div class="container">
+
+        <div class="card left-panel">
+            <div class="card-header">
+                Add Task
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" placeholder="Enter task title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="desc">Description</label>
+                        <textarea id="desc" rows="5" placeholder="Enter task description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <div class="select-wrapper">
+                            <select id="status">
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-primary">Add Task</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card right-panel">
+            <div class="card-header">
+                Task List
+            </div>
+            <div class="card-body">
+                
+                <div class="list-controls">
+                    <input type="text" placeholder="Search by title" class="search-input">
+                    <select class="filter-select">
+                        <option value="all">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">Id</th>
+                                <th style="width: 20%;">Title</th>
+                                <th style="width: 30%;">Description</th>
+                                <th style="width: 15%;">Status</th>
+                                <th style="width: 15%;">Created Date</th>
+                                <th style="width: 15%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- data will be added through form -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
