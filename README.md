@@ -63,29 +63,6 @@ The objective of this assignment was to build a **single-page task management ap
 
 ---
 
-## 🔹 Project Structure
-
-```
-task-management-system/
-│
-├── frontend/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-│
-├── backend/
-│   ├── server.js        
-│   ├── routes.js        
-│   ├── db.js            
-│   ├── package.json
-│   └── package-lock.json
-│
-├── .gitignore
-└── README.md
-```
-
----
-
 ## 🔹 How the Application Works
 
 1. The frontend sends requests to the **Node.js backend** using API
@@ -151,7 +128,3 @@ frontend/index.html
 **Shubham**
 MCA Student
 Full-Stack Development Aspirant
-
-
-
-# want next.
