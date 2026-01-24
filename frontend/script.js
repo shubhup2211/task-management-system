@@ -1,181 +1,158 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const API_URL = "http://localhost:3000/tasks";
+    const url = "http://localhost:3000/tasks";
 
-    const titleInput = document.getElementById("title");
-    const descInput = document.getElementById("desc");
-    const statusSelect = document.getElementById("status");
-    const formButton = document.querySelector(".btn-primary");
-    const tableBody = document.querySelector("tbody");
-    
-    const searchInput = document.querySelector(".search-input");
-    const filterSelect = document.querySelector(".filter-select");
+    // DOM elements
+    const title = document.getElementById("title");
+    const desc = document.getElementById("desc");
+    const status = document.getElementById("status");
+    const btn = document.querySelector(".btn-primary");
+    const tbody = document.querySelector("tbody");
+    const search = document.querySelector(".search-input");
+    const filter = document.querySelector(".filter-select");
 
-    let editingTaskId = null;
-    let allTasks = []; 
+    let editId = null;
+    let tasks = []; 
 
-    fetchTasks();
+    // all task
+    getAllTasks();
 
-    function fetchTasks() {
-        fetch(API_URL)
+    function getAllTasks() {
+        fetch(url)
             .then(res => res.json())
             .then(data => {
-                allTasks = data;
-                filterAndRenderTasks();
+                tasks = data;
+                filterTasks();
             })
-            .catch(error => console.error(error));
+            .catch(err => console.error(err));
     }
 
-    function renderTasksToTable(tasks) {
-        tableBody.innerHTML = "";
+    const render = (taskList) => {
+        tbody.innerHTML = "";
 
-        if (tasks.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6' style='text-align:center'>No tasks found.</td></tr>";
+        if (taskList.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='6' style='text-align:center'>No tasks found.</td></tr>";
             return;
         }
 
-        tasks.forEach(task => {
-            let dateString = "N/A";
-            if (task.created_at) {
-                dateString = new Date(task.created_at).toLocaleDateString();
-            }
-
-            let badgeClass = "pending";
-            if (task.status && task.status.toLowerCase() === "completed") {
-                badgeClass = "completed";
-            }
-
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>#${task.id}</td>
-                <td>${task.title}</td>
-                <td>${task.description || ""}</td>
-                <td>
-                    <span class="badge ${badgeClass}">${task.status}</span>
-                </td>
-                <td>${dateString}</td>
-                <td class="actions">
-                    <button class="btn-icon edit" data-id="${task.id}">✏️</button>
-                    <button class="btn-icon delete" data-id="${task.id}">🗑️</button>
-                </td>
-            `;
-
-            tableBody.appendChild(row);
-        });
-    }
-
-    function filterAndRenderTasks() {
-        const searchText = searchInput.value.toLowerCase();
-        const filterStatus = filterSelect.value;
-
-        const filteredTasks = allTasks.filter(task => {
-            const matchesSearch = task.title.toLowerCase().includes(searchText);
-            const matchesFilter = filterStatus === "all" || task.status.toLowerCase() === filterStatus;
+        taskList.forEach(t => {
+            // format date
+            let date = t.created_at ? new Date(t.created_at).toLocaleDateString() : "N/A";
             
-            return matchesSearch && matchesFilter;
-        });
+            //set badge color
+            let badge = t.status && t.status.toLowerCase() === "completed" ? "completed" : "pending";
 
-        renderTasksToTable(filteredTasks);
+            const row = `
+                <tr>
+                    <td>#${t.id}</td>
+                    <td>${t.title}</td>
+                    <td>${t.description || ""}</td>
+                    <td><span class="badge ${badge}">${t.status}</span></td>
+                    <td>${date}</td>
+                    <td class="actions">
+                        <button class="btn-icon edit" data-id="${t.id}">✏️</button>
+                        <button class="btn-icon delete" data-id="${t.id}">🗑️</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
     }
 
-    searchInput.addEventListener("input", filterAndRenderTasks);
-    filterSelect.addEventListener("change", filterAndRenderTasks);
+    const filterTasks = () => {
+        const text = search.value.toLowerCase();
+        const stat = filter.value;
 
-    formButton.addEventListener("click", function () {
-        const titleValue = titleInput.value;
-        const descValue = descInput.value;
-        const statusValue = statusSelect.value;
+        const filtered = tasks.filter(t => {
+            const matchText = t.title.toLowerCase().includes(text);
+            const matchStat = stat === "all" || t.status.toLowerCase() === stat;
+            return matchText && matchStat;
+        });
 
-        if (titleValue === "") {
-            alert("Please enter a Title!");
+        render(filtered);
+    }
+
+    // event listeners
+    search.addEventListener("input", filterTasks);
+    filter.addEventListener("change", filterTasks);
+
+    // Add / update task
+    btn.addEventListener("click", () => {
+        const tVal = title.value;
+        const dVal = desc.value;
+        const sVal = status.value;
+
+        if (tVal === "") {
+            alert("Title is required!");
             return;
         }
 
-        const taskData = {
-            title: titleValue,
-            description: descValue,
-            status: statusValue.charAt(0).toUpperCase() + statusValue.slice(1),
+        const data = {
+            title: tVal,
+            description: dVal,
+            status: sVal.charAt(0).toUpperCase() + sVal.slice(1),
             created_at: new Date().toISOString()
         };
 
-        if (editingTaskId === null) {
-            fetch(API_URL, {
+        if (editId === null) {
+            // create
+            fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(taskData)
-            })
-            .then(() => {
-                clearForm();
-                fetchTasks();
+                body: JSON.stringify(data)
+            }).then(() => {
+                clearData();
+                getAllTasks();
             });
         } else {
-            fetch(`${API_URL}/${editingTaskId}`, {
+            // update
+            fetch(`${url}/${editId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(taskData)
-            })
-            .then(() => {
-                clearForm();
-                fetchTasks();
+                body: JSON.stringify(data)
+            }).then(() => {
+                clearData();
+                getAllTasks();
             });
         }
     });
 
-    tableBody.addEventListener("click", function (event) {
-        const target = event.target;
-        
+    // Handle edit & delete
+    tbody.addEventListener("click", (e) => {
+        const target = e.target;
         const editBtn = target.closest(".edit");
-        const deleteBtn = target.closest(".delete");
+        const delBtn = target.closest(".delete");
 
         if (editBtn) {
             const id = editBtn.getAttribute("data-id");
-            
-            if (!id) return;
+            fetch(`${url}/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    title.value = data.title;
+                    desc.value = data.description || "";
+                    status.value = data.status ? data.status.toLowerCase() : "pending";
 
-            fetch(`${API_URL}/${id}`)
-                .then(res => {
-                    if (!res.ok) throw new Error("Task not found");
-                    return res.json();
-                })
-                .then(task => {
-                    titleInput.value = task.title;
-                    descInput.value = task.description || "";
-                    
-                    if (task.status) {
-                        statusSelect.value = task.status.toLowerCase();
-                    } else {
-                        statusSelect.value = "pending";
-                    }
-
-                    editingTaskId = id;
-                    formButton.textContent = "Update Task";
-                    formButton.style.backgroundColor = "#4f46e5"; 
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Error: Could not load task. It may have been deleted.");
-                    fetchTasks(); 
+                    editId = id;
+                    btn.textContent = "Update Task";
+                    btn.style.backgroundColor = "#4f46e5"; 
                 });
         }
 
-        if (deleteBtn) {
-            const id = deleteBtn.getAttribute("data-id");
-            if (id && confirm("Delete this task?")) {
-                fetch(`${API_URL}/${id}`, { method: "DELETE" })
-                    .then(() => fetchTasks());
+        if (delBtn) {
+            const id = delBtn.getAttribute("data-id");
+            if (confirm("Are you sure you want to delete?")) {
+                fetch(`${url}/${id}`, { method: "DELETE" })
+                    .then(() => getAllTasks());
             }
         }
     });
 
-    function clearForm() {
-        titleInput.value = "";
-        descInput.value = "";
-        statusSelect.value = "pending";
-
-        editingTaskId = null;
-        formButton.textContent = "Add Task";
-        formButton.style.backgroundColor = "#6366f1"; 
+    function clearData() {
+        title.value = "";
+        desc.value = "";
+        status.value = "pending";
+        editId = null;
+        btn.textContent = "Add Task";
+        btn.style.backgroundColor = "#6366f1"; 
     }
-
 });
